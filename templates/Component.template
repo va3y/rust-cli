@@ -1,0 +1,7 @@
+interface I<<COMPONENT_NAME>>Props {
+	asdf: string;
+}
+
+export const <<COMPONENT_NAME>>: React.FC<I<<COMPONENT_NAME>>Props> = () => {
+	return <div></div>;
+};
