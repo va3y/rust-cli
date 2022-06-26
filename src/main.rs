@@ -3,6 +3,7 @@
 use clap::Parser;
 use dialoguer::Confirm;
 use dialoguer::Input;
+use std::fs;
 use std::fs::DirBuilder;
 use std::fs::File;
 use std::io;
@@ -37,20 +38,27 @@ fn main() {
 
     DirBuilder::new().create(&component_name).unwrap();
 
-    let path: PathBuf = [component_name.clone(), component_name + ".ts"]
-        .iter()
-        .collect();
-    let file = create_file(path);
+    let component_file_name = component_name.clone() + ".tsx";
 
-    if Confirm::new()
-        .with_prompt("Do you want to continue?")
-        .interact()
+    let component_template = fs::read_to_string("./templates/Component.template")
         .unwrap()
-    {
-        println!("Looks like you want to continue");
-    } else {
-        println!("nevermind then :(");
-    }
+        .replace("<<COMPONENT_NAME>>", &component_name);
+
+    let file = create_file(
+        [
+            component_name.clone(),
+            component_name + &component_file_name,
+        ]
+        .iter()
+        .collect::<PathBuf>(),
+    )
+    .write(component_template.as_bytes());
+
+    let with_tests = Confirm::new()
+        .with_prompt("Tests?")
+        .default(true)
+        .interact()
+        .unwrap();
 
     for line in content.lines() {
         if line.contains(&args.pattern) {
