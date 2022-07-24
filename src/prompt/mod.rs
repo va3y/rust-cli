@@ -19,13 +19,16 @@ pub fn run_prompt() -> UserInput {
         .with_prompt("Are there any child component? (comma-separated)")
         .interact_text()
         .unwrap();
-    let child_components = comma_separate_str(&child_components);
+    let child_components = comma_separate_str(child_components.clone());
 
     let child_containers: String = Input::new()
         .with_prompt("Are there any child containers? (comma-separated)")
         .interact_text()
         .unwrap();
-    let child_containers = comma_separate_str(&child_containers).as_ref();
+    let child_containers = {
+        let res = comma_separate_str(child_containers.clone()).as_ref();
+        res
+    };
 
     UserInput {
         tests: with_tests,
